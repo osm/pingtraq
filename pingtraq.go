@@ -13,17 +13,19 @@ func Init(db string) error {
 	return nil
 }
 
-func IsPing(name string) string {
+func IsPing(name string) (string, *string) {
 	var id string
-	err := queryRow("SELECT id FROM ping WHERE name = ?", name).Scan(&id)
+	var afterHook *string
+
+	err := queryRow("SELECT id, after_hook FROM ping WHERE name = ?", name).Scan(&id, &afterHook)
 	if err != nil && err != sql.ErrNoRows {
-		return ""
+		return "", nil
 	}
 	if id == "" {
-		return ""
+		return "", nil
 	}
 
-	return id
+	return id, afterHook
 }
 
 func AddPing(name string) error {

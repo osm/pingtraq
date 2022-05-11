@@ -25,6 +25,7 @@ func getDatabaseRepository() repository.Source {
 		1: "CREATE TABLE migration (version text NOT NULL PRIMARY KEY);",
 		2: "CREATE TABLE ping (id text NOT NULL PRIMARY KEY, name text NOT NULL UNIQUE, created_at timestamp with time zone NOT NULL);",
 		3: "CREATE TABLE ping_record (id text PRIMARY KEY, ping_id text NOT NULL, client text NOT NULL, address text NOT NULL, user_agent text NOT NULL, battery_level text, created_at timestamp with time zone NOT NULL, FOREIGN KEY (ping_id) REFERENCES ping (id));",
+		4: "ALTER TABLE ping ADD COLUMN after_hook text;",
 	})
 }
 

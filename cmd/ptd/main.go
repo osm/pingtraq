@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os/exec"
 
 	"github.com/osm/pingtraq"
 	"github.com/spf13/cobra"
@@ -28,13 +29,27 @@ func main() {
 
 				name := url[1:]
 				var id string
-				if id = pingtraq.IsPing(name); id == "" {
+				var afterHook *string
+				if id, afterHook = pingtraq.IsPing(name); id == "" {
 					return
 				}
 
 				if err := pingtraq.AddPingRecord(id, r); err != nil {
 					log.Printf("AddPingRecord: %v\n", err)
 					return
+				}
+
+				if afterHook != nil {
+					cmd := exec.Command(*afterHook)
+					if out, err := cmd.CombinedOutput(); err != nil {
+						log.Printf("After hook %s error: %v\n", *afterHook, err)
+					} else {
+						o := string(out)
+						if o[len(o)-1] == '\n' {
+							o = o[:len(o)-1]
+						}
+						log.Printf("After hook %s: %s\n", *afterHook, o)
+					}
 				}
 
 				log.Printf("Ping %s from %s\n", name, r.RemoteAddr)
