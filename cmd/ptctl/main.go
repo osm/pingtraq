@@ -22,7 +22,7 @@ func main() {
 			}
 
 			name := args[0]
-			if id := pingtraq.IsPing(name); id != "" {
+			if id, _ := pingtraq.IsPing(name); id != "" {
 				fmt.Fprintf(os.Stderr, "%v does already exist\n", name)
 				return
 			}
@@ -68,7 +68,7 @@ func main() {
 			}
 
 			name := args[0]
-			if id := pingtraq.IsPing(name); id == "" {
+			if id, _ := pingtraq.IsPing(name); id == "" {
 				fmt.Fprintf(os.Stderr, "%s does not exist\n", name)
 				return
 			}
